@@ -16,9 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
 router.get('/hello', (req, res, next) => {
-    res.status(200).json({
-        hello: "World"
-    });
+    res.status(200).json({ hello: "World" });
 });
 
 const DB_URL = 'mongodb://localhost:27017/amesiere';
@@ -30,16 +28,16 @@ let translate = (term, terms, limit = 5) => {
         t => t.definition.trim()
         .split(/[.,; ]/)[0].toLowerCase()
         .indexOf(term) === 0
-    ).splice(0,limit);
+    ).splice(0, limit);
 };
 
 router.get('/translate', (req, res, next) => {
     let { term } = req.query;
-    MongoClient.connect(DB_URL,  (err, client) => {
+    MongoClient.connect(DB_URL, (err, client) => {
         if (err) throw err
 
         var db = client.db('amesiere')
-        db.collection('dictionary').find().toArray( (err, result) => {
+        db.collection('dictionary').find().toArray((err, result) => {
             if (err) throw err
 
             let translations = translate(term, result[0].terms);
@@ -49,7 +47,6 @@ router.get('/translate', (req, res, next) => {
 });
 
 let routes = router;
-
 app.use('/', routes);
 
 const PORT = process.env.APP_PORT || 3000;
@@ -57,4 +54,3 @@ const PORT = process.env.APP_PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}... http://localhost:${PORT} ...`)
 });
-
