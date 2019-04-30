@@ -19,8 +19,25 @@ router.get('/', (req, res, next) => {
 
 router.get('/translate', (req, res, next) => {
     let { term } = req.query;
-    res.status(200).json({
-        term
+    const MongoClient = require('mongodb').MongoClient
+    MongoClient.connect('mongodb://localhost:27017/amesiere', function (err, client) {
+        if (err) throw err
+
+        var db = client.db('amesiere')
+        db.collection('dictionary').find().toArray(function (err, result) {
+            if (err) throw err
+
+            // TODO: Improve the search algorithm
+            let translate = (term, terms, limit = 5) => terms
+                .filter(t => t.definition.trim().split(/[.,; ]/)[0].toLowerCase().indexOf(term) === 0)
+                .splice(0,limit);
+
+            let translations = translate(term, result[0].terms);
+            res.status(200).json({
+                term,
+                translations
+            });
+        });
     });
 });
 
