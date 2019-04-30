@@ -32,7 +32,7 @@ let translate = (term, terms, limit = 5) => {
 };
 
 router.get('/translate', (req, res, next) => {
-    let { term } = req.query;
+    let { term = "" } = req.query;
     MongoClient.connect(DB_URL, (err, client) => {
         if (err) throw err
 
