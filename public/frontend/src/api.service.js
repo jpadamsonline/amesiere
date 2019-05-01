@@ -1,6 +1,6 @@
 import axios from 'axios';
 let host = document.location.host;
-let apiUrl = host.includes('localhost') ? 'http://localhost:5000' : `https://${host}`
+let apiUrl = host.includes('localhost') ? 'http://localhost:5000' : `//${host}`
 const API_URL = 'http://localhost:5000';
 
 export class ApiService {
