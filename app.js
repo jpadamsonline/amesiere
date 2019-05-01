@@ -12,9 +12,9 @@ app.use(cors());
 
 // set the public path
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/app', express.static(path.join(__dirname, 'public', 'frontend', 'dist')));
-app.use('/js', express.static(path.join(__dirname, 'public', 'frontend', 'dist', 'js')));
-app.use('/css', express.static(path.join(__dirname, 'public', 'frontend', 'dist', 'css')));
+
+app.use('/js', express.static(path.join(__dirname, 'public', 'app', 'js')));
+app.use('/css', express.static(path.join(__dirname, 'public', 'app', 'css')));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -56,7 +56,7 @@ router.get('/translate', (req, res, next) => {
 let routes = router;
 app.use('/', routes);
 
-const PORT = process.env.APP_PORT || 3000;
+const PORT = process.env.APP_PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}... http://localhost:${PORT} ...`)
