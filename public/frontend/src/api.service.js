@@ -1,12 +1,14 @@
 import axios from 'axios';
-const API_URL = 'http://localhost:3000';
+let host = document.location.host;
+let apiUrl = host.includes('localhost') ? 'http://localhost:5000' : `http://${host}`
+const API_URL = 'http://localhost:5000';
 
 export class ApiService {
     constructor() {
     }
 
     searchTerm(term) {
-        const url = `${API_URL}/translate?term=${term}`;
+        const url = `${apiUrl}/translate?term=${term}`;
         return axios.get(url).then(response => response.data);
     }
 }
