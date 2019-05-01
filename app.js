@@ -26,7 +26,11 @@ router.get('/hello', (req, res, next) => {
     res.status(200).json({ hello: "World" });
 });
 
-const DB_URL = 'mongodb://localhost:27017/amesiere';
+let LocalDB_URL = 'mongodb://localhost:27017/amesiere';
+
+let mongoUrl = process.env.MONGOLAB_URI;
+let DB_URL = mongoUrl;
+
 const MongoClient = require('mongodb').MongoClient
 
 // TODO: Improve the search algorithm
