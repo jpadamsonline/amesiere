@@ -3,11 +3,18 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const router = express.Router();
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 
+// enable CORS Requests
+app.use(cors());
+
 // set the public path
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/app', express.static(path.join(__dirname, 'public', 'frontend', 'dist')));
+app.use('/js', express.static(path.join(__dirname, 'public', 'frontend', 'dist', 'js')));
+app.use('/css', express.static(path.join(__dirname, 'public', 'frontend', 'dist', 'css')));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
