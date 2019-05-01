@@ -29,7 +29,8 @@ router.get('/hello', (req, res, next) => {
 let LocalDB_URL = 'mongodb://localhost:27017/amesiere';
 
 let mongoUrl = process.env.MONGOLAB_URI;
-let DB_URL = mongoUrl;
+let DB_URL = mongoUrl? mongoUrl: LocalDB_URL;
+console.log(':::::::::::::::', DB_URL)
 
 const MongoClient = require('mongodb').MongoClient
 
@@ -44,16 +45,20 @@ let translate = (term, terms, limit = 5) => {
 
 router.get('/translate', (req, res, next) => {
     let { term = "" } = req.query;
-    MongoClient.connect(DB_URL, (err, client) => {
-        if (err) throw err
+    const client = new MongoClient(DB_URL, { useNewUrlParser: true });
+    client.connect(err => {
+        if (err) {
+            console.log(err.message, err);
+            throw err;
+        }
 
-        var db = client.db('amesiere')
-        db.collection('dictionary').find().toArray((err, result) => {
+        const collection = client.db('amesiere').collection('dictionary');
+        collection.find().toArray((err, result) => {
             if (err) throw err
-
             let translations = translate(term, result[0].terms);
             res.status(200).json({ term, translations });
         });
+        client.close();
     });
 });
 
