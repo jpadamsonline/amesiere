@@ -11,4 +11,9 @@ export class ApiService {
         const url = `${apiUrl}/translate?term=${term}`;
         return axios.get(url).then(response => response.data);
     }
+
+    getTerms() {
+        const url = `${apiUrl}/data/dictionary.json`;
+        return axios.get(url).then(response => response.data);
+    }
 }

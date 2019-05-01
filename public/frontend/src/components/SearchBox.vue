@@ -7,10 +7,40 @@
       </div>
       <h1>Amesiere Ibibio Translator</h1>
       <div class="info-form">
-        <form>
+        <form v-if="autoMode">
           <div class="form-group">
             <small id="searchHelp" class="text-muted">
-              Enter a word in English to get the Ibibio translation
+              Auto Search a word in English to get the Ibibio translation
+            </small><br/>
+            <label for="term"></label>
+            <input type="text" class="text"
+                name="term" v-model="search.term"
+                @input.prevent="autoSearch()"
+                placeholder="Type a word"/><br/>
+            <button class="btn" @click.prevent="autoSearch()">
+              Translate
+            </button><br/>
+            <ul>
+              <li v-if="!matchedTerms.length">
+                <span>No results found</span><br/>
+              </li>
+              <li v-for="translation in matchedTerms">
+                <p>
+                  <strong>English:</strong>
+                  {{ translation.definition }}
+                </p>
+                <p>
+                  <strong>Ibibio:</strong>
+                  {{ translation.term }}
+                </p>
+              </li>
+            </ul>
+          </div>
+        </form>
+        <form v-if="!autoMode">
+          <div class="form-group">
+            <small id="searchHelp" class="text-muted">
+              Enter a word in English to get the Ibibio translation (manual)
             </small><br/>
             <label for="term"></label>
             <input type="text" class="text"
@@ -52,17 +82,50 @@
     data() {
       return {
         showError: false,
+        autoMode: true,
         translations: [],
+        matchedTerms: [],
+        allTerms: [],
         search: {}
       };
     },
     methods: {
+      autoSearch() {
+        if(!this.search.term) return this.matchedTerms = [];
+        if (!this.allTerms.length) {
+        apiService.getTerms(this.search.term).then((result) => {
+          this.allTerms = [...result.terms];
+        }, (error) => {
+          this.showError = true;
+        });
+        }
+
+        // TODO: make better
+        let other = this.allTerms
+          .filter(t => RegExp("(" + this.search.term + ")","i").test(t.definition))
+          .map(t => {
+            let matched = t.definition.match(RegExp("("+ this.search.term +")","i"));
+            if (!matched) return null;
+            return {
+              ...matched,
+              ...t
+            };
+          })
+        .filter(a => !!a)
+        .sort((a,b) => a.index - b.index);
+
+        this.matchedTerms = other;
+        //console.log(other);
+      },
       searchTerm() {
         apiService.searchTerm(this.search.term).then((result) => {
           this.translations = [...result.translations];
         }, (error) => {
           this.showError = true;
         });
+      },
+      switchMode() {
+        this.autoMode = !this.autoMode;
       },
       hideMessage() {
         this.showError = false;
