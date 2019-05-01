@@ -60,8 +60,8 @@ router.get('/translate', (req, res, next) => {
 let routes = router;
 app.use('/', routes);
 
-const PORT = process.env.APP_PORT || 5000;
+let appPort = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}... http://localhost:${PORT} ...`)
+app.listen(appPort, () => {
+    console.log(`Listening on port ${appPort}... http://localhost:${appPort} ...`)
 });
