@@ -22,10 +22,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json())
 
-router.get('/hello', (req, res, next) => {
-    res.status(200).json({ hello: "World" });
-});
-
 let LocalDB_URL = 'mongodb://localhost:27017/amesiere';
 
 let mongoUrl = process.env.MONGOLAB_URI;
